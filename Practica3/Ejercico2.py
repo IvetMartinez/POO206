@@ -4,6 +4,7 @@ Divisible por 4: Si el año es divisible por 4, generalmente es bisiesto.
 Divisible por 100: Si es divisible por 100, NO es bisiesto a menos que también sea divisible por 400. 
 Divisible por 400: Si es divisible por 400, SI es bisiesto. 
 En resumen, un año es bisiesto si es divisible por 4 pero no por 100, o si es divisible por 400. 
+
 """
 try:
   a=0
