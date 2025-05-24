@@ -1,6 +1,7 @@
 """""
 programa que solicite una cadena de caracteres e imprima como
 resultado si la cadena es palíndroma o no
+
 """
 try:
     a=input('Escribe una cadena: ')
