@@ -119,3 +119,20 @@ body {
 .seccion li {
     margin-bottom: 10px;
 }
+.bg-light {
+    background-color: #F0F3FA;
+}
+
+.lista-tecno {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+.lista-tecno li {
+    background: #D5DEEF;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 500;
+}
