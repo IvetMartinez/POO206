@@ -1,4 +1,4 @@
-from flask import Flask, jsonify #práctica 8
+from flask import Flask, jsonify, render_template, request,url_for, flash,redirect  #1 funcion para mandar llamar las vistas
 from flask_mysqldb import MySQL
 import MySQLdb
 
@@ -8,13 +8,81 @@ app = Flask (__name__)
  #definir variables
 app.config['MYSQL_HOST']="localhost"
 app.config['MYSQL_USER']="root"
-app.config['MYSQL_PASSWORD']="11martevI*"
+app.config['MYSQL_PASSWORD']="1111Ivet**"
 app.config['MYSQL_DB']="dbFlask"
-#app.config['MYSQL_PORT']=3306
+app.config['MYSQL_PORT']=3306
+app.secret_key ='mysecretkey'
 
 mysql =MySQL(app)
 
-#ruta para probar la conección  a MYSQL
+#ruta inicio #2
+@app.route('/formulario')
+def home():
+    #PRACTICA 10- Se agregaron las siguientes lineas 
+    try:
+        cursor= mysql.connection.cursor()
+        cursor.execute('SELECT*FROM albums')
+        consultatodo= cursor.fetchall()
+        return render_template ('formulario.html', errores ={},albums=consultatodo) #Regresa un render_template a la vista de formular
+        
+    except Exception as e:
+        print('Error al consultar todo: '+e)
+        return render_template ('formulario.html', errores ={},albums=[]) #Lllega la respuesta vacía
+    
+        
+    finally:
+        cursor.close()  
+         
+
+#ruta consulta #3
+@app.route('/consulta')
+def consulta():
+    return render_template ('consulta.html') #Regresa un render_template a la vista de consulta
+
+
+#ruta para el insert    #continuacion de la practica
+@app.route('/guardarAlbum', methods=['POST'])
+def guardar():
+#declarar un diccionario/lista de errores de validaciones
+    errores= {}
+    
+    
+    #obtener los datos a insertar de la vista
+    album=request.form.get('txtTitulo','').strip() #si hay espacios en lo que se escribe, strip se encarga de quitar los espacios para evitar que se guarden
+    artista=request.form.get('txtArtista','').strip()
+    anio=request.form.get('txtAnio','').strip()
+    
+    if not album:
+        errores['txtTitulo']='Nombre del album Obligatorio'
+    if not artista:
+        errores['txtArtista']='Artista es Obligatorio'
+    if not anio:
+        errores['txtAnio']='Año Obligatorio'
+    elif not anio.isdigit() or int(anio)<1800 or int(anio)>2100:
+        errores['txtAnio']='Ingresa un año valido'
+
+    if not errores:
+        try:
+            cursor= mysql.connection.cursor()
+            cursor.execute('insert into albums(album,artista,anio) values(%s,%s,%s)',(album,artista,anio)) #datos de la base de datos creada
+            mysql.connection.commit()
+            flash('Album guardado en la BD')
+            return redirect(url_for('home'))
+
+        except Exception as e:
+            mysql.connection.rollback() # revierte en caso de que se haya echo algo y ocurra un error
+            flash('Algo fallo:'+str(e))
+            return  redirect(url_for('home'))
+        
+        finally:
+            cursor.close()
+            
+    return render_template('formulario.html',errores=errores)
+    #return render_template('consulta.html')
+        
+
+    
+ #ruta para probar la conección  a MYSQL
 @app.route('/DBcheck')
 def DBcheck():
     try:
@@ -22,41 +90,8 @@ def DBcheck():
         cursor.execute('Select 1')
         return jsonify(  { 'status':'ok','message' : 'Conetactado con exito' }  ),200
     except MySQLdb.MySQLError as e:
-         return jsonify( {'status': 'error', 'message' : str(e)}),500
-         
-
-
-
-
-
-
-#ruta simple 1
-@app.route('/')
-def home():
-    return 'Hola mundo FLASK'
-#ruta con parametros  2
-@app.route('/saludo/<nombre>')
-def saludar(nombre): # puedes agregar el tipo de dato y el parametro (int:nombre)
-    return 'Hola,' +nombre +'!!!'
- #ruta try-catch
-@app.errorhandler(404)
-def paginaNoEncontrada(e):
-    return 'Cuidado : Error de capa 8 !!!',404
-@app.errorhandler(405)
-def metodonoP(e):
-    return 'Revisa el metodo de envio de la ruta (GET o POST)!!!',405
-
- #ruta doble
-@app.route('/usuario')
-@app.route('/usuaria')
-def dobleroute():
-    return 'Soy el mismo recurso del servidor'
+         return jsonify( {'status': 'error', 'message' : str(e)}),500   
     
-    #ruta POST
-@app.route('/formulario', methods = ['POST'])
-def formulario():
-    return 'Hola soy un formulario' #No existe algo que haga el metodo
-   
     
 if __name__ == '__main__':
     app.run(port=3000, debug = True)
