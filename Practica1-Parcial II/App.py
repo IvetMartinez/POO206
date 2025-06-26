@@ -16,7 +16,7 @@ app.secret_key ='mysecretkey'
 mysql =MySQL(app)
 
 #ruta inicio #2
-@app.route('/formulario')
+@app.route('/')
 def home():
     #PRACTICA 10- Se agregaron las siguientes lineas 
     try:
@@ -30,6 +30,23 @@ def home():
         return render_template ('formulario.html', errores ={},albums=[]) #Lllega la respuesta vacía
     
         
+    finally:
+        cursor.close()  
+        
+ #PRACTICA 10- Se crea una ruta detalles    
+@app.route('/detalle/<int:idAlbums>')
+def detalle(idAlbums):
+    
+    try:
+        cursor= mysql.connection.cursor()
+        cursor.execute('SELECT*FROM albums where idAlbums=%s', (idAlbums,))
+        consultaId= cursor.fetchone() #obtiene un registro
+        return render_template('consulta.html',album=consultaId) #Regresa un render_template a la vista de formular
+        
+    except Exception as e:
+        print('Error al consultar por id: '+e)
+        return redirect((url_for('home'))) #Lllega la respuesta vacía
+    
     finally:
         cursor.close()  
          
