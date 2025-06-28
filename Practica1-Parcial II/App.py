@@ -49,7 +49,29 @@ def detalle(idAlbums):
     
     finally:
         cursor.close()  
-         
+ 
+ 
+ 
+ # Ruta formUpdate
+@app.route('/editar/<int:idAlbums>')
+def editar(idAlbums):
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * FROM albums WHERE idAlbums = %s', (idAlbums,))
+        album = cursor.fetchone()
+        if album:
+            return render_template('formUpdate.html', album=album)
+        else:
+            flash('Álbum no encontrado')
+            return redirect(url_for('home'))
+    except Exception as e:
+        print('Error al obtener álbum: ' + str(e))
+        flash('Error al obtener el álbum')
+        return redirect(url_for('home'))
+    finally:
+        cursor.close()  
+        
+              
 
 #ruta consulta #3
 @app.route('/consulta')
@@ -98,6 +120,54 @@ def guardar():
     #return render_template('consulta.html')
         
 
+    
+# Ruta para actualizar 
+@app.route('/actualizarAlbum', methods=['POST'])
+def actualizar():
+    errores = {}
+
+    # Obtener los datos del formulario
+    idAlbum= request.form.get('idAlbums', '').strip()
+    album = request.form.get('txtTitulo', '').strip()
+    artista = request.form.get('txtArtista', '').strip()
+    anio = request.form.get('txtAnio', '').strip()
+
+    if not album:
+        errores['txtTitulo'] = 'Nombre del álbum obligatorio'
+    if not artista:
+        errores['txtArtista'] = 'Artista es obligatorio'
+    if not anio:
+        errores['txtAnio'] = 'Año obligatorio'
+    elif not anio.isdigit() or int(anio) < 1800 or int(anio) > 2100:
+        errores['txtAnio'] = 'Ingresa un año válido'
+
+    if not errores:
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute(
+                'UPDATE albums SET album=%s, artista=%s, anio=%s WHERE idAlbums=%s',
+                (album, artista, anio, idAlbum)
+            )
+            mysql.connection.commit()
+            flash('Álbum actualizado correctamente')
+            return redirect(url_for('home'))
+
+        except Exception as e:
+            mysql.connection.rollback()
+            flash('Algo fallo: ' + str(e))
+            return redirect(url_for('home'))
+
+        finally:
+            cursor.close()
+
+    return render_template('formUpdate.html', album=request.form, errores=errores)    
+    
+    
+    
+    
+    
+    
+    
     
  #ruta para probar la conección  a MYSQL
 @app.route('/DBcheck')
