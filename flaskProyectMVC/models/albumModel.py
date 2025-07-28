@@ -26,7 +26,7 @@ def insertAlbum(titulo, artista, anio):
 #Método para actualizar un album
 def updateAlbum(idUpdate, nTitulo, nArtista, nAnio):
     cursor = mysql.connection.cursor()
-    cursor.execute('update albums set album = %s, artista = %s, anio = %s where id = %s', (nTitulo, nArtista, nAnio, idUpdate))
+    cursor.execute('update albums set albums = %s, artista = %s, anio = %s where id = %s', (nTitulo, nArtista, nAnio, idUpdate))
     mysql.connection.commit()
     cursor.close()
     

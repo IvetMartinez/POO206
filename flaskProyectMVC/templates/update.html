@@ -24,9 +24,9 @@
             
             <tr>
                 <form action="/modificarAlbum" method="post">
-                    <td><input type="hidden" name="id" id="" value="{{album.0}}"></td>
+                    <td><input type="hidden" name="id" id="" value="{{alb.0}}"></td>
                     
-                    <td><input type="text" name="ntxtTitulo" value="{{album.1}}"></td>
+                    <td><input type="text" name="ntxtTitulo" value="{{alb.1}}"></td>
 
                         {% if errores and errores.ntxtTitulo%}
 
@@ -37,7 +37,7 @@
                         
 
 
-                    <td><input type="text" name="ntxtArtista" value="{{album.2}}"></td>
+                    <td><input type="text" name="ntxtArtista" value="{{alb.2}}"></td>
 
                         {% if errores and errores.ntxtArtista%}
 
@@ -47,7 +47,7 @@
 
                         
 
-                    <td><input type="text" name="ntxtAnio" value="{{album.3}}"></td>
+                    <td><input type="text" name="ntxtAnio" value="{{alb.3}}"></td>
 
                         {% if errores and errores.ntxtAnio%}
 

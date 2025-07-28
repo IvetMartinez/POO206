@@ -21,19 +21,19 @@
         {% endif %}
     {%endwith%}
 
-    <form action="/confirmar_eliminacion/{{album.0}}" method="post">
+    <form action="/confirmar_eliminacion/{{alb.0}}" method="post">
 
-        <input type="text" name="txtTitulo" placeholder="Título" value="{{album.1}}" disabled>
-
-
-
-
-        <input type="text" name="txtArtista" placeholder="Artista" value="{{album.2}}" disabled>
+        <input type="text" name="txtTitulo" placeholder="Título" value="{{alb.1}}" disabled>
 
 
 
 
-        <input type="number" name="txtAnio" placeholder="Año de publicación" value="{{ album.3}}" disabled>
+        <input type="text" name="txtArtista" placeholder="Artista" value="{{alb.2}}" disabled>
+
+
+
+
+        <input type="number" name="txtAnio" placeholder="Año de publicación" value="{{ alb.3}}" disabled>
 
 
             

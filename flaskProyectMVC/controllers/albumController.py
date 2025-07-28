@@ -43,12 +43,11 @@ def guardar():
             
     return render_template('formulario.html', errores = errores)    
 
-#Ruta para ver detalles
 @albumBP.route('/detalle/<int:id>')
 def detalle(id):
     try:
         albums = getById(id)
-        return render_template('consulta.html', albums = albums)
+        return render_template('consulta.html', alb = albums) 
     except Exception as e:
         flash('Error al consultar el album: ' +  str(e))
         return redirect(url_for('albums.home'))
